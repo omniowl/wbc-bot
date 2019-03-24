@@ -34,6 +34,13 @@ namespace BananaBot
             }
         }
 
+        public static JToken GetConfigRootProperty(string key)
+        {
+            JObject jsonObj = JObject.Parse(File.ReadAllText(AppContext.BaseDirectory + "_configuration.json"));
+            JToken jToken = jsonObj.SelectToken(key);
+            return jToken;
+        }
+
         /// <summary>
         /// Checks to see if the serverID provided matches a server from our configuration.
         /// </summary>
@@ -227,41 +234,6 @@ namespace BananaBot
             }
 
             return data;
-        }
-
-        /// <summary>
-        /// Used to find the Hierarchy Value so that users can be compared by rank.
-        /// </summary>
-        /// <param name="user">The user whom should be evaluated</param>
-        /// <returns>A number representing their place in the hierarchy. Higher Number has more previleges.</returns>
-        public static EHierarchy GetUserHierarchyValue(SocketGuildUser user)
-        {
-            List<String> Roles = new List<String>();
-            foreach (IRole role in user.Roles)
-            {
-                Roles.Add(role.Name);
-            }
-
-            if (Roles.Contains("Administrator") || Roles.Contains("Admin"))
-            {
-                return EHierarchy.ADMINISTRATOR;
-            }
-            else if (Roles.Contains("Bot Master"))
-            {
-                return EHierarchy.BOTMASTER;
-            }
-            else if (Roles.Contains("Supervisor"))
-            {
-                return EHierarchy.SUPERVISOR;
-            }
-            else if (Roles.Contains("Moderator"))
-            {
-                return EHierarchy.MODERATOR;
-            }
-            else
-            {
-                return (int)EHierarchy.USER;
-            }
         }
     }
 }
