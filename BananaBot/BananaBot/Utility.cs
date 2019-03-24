@@ -26,7 +26,7 @@ namespace BananaBot
         public static void Init()
         {
             JObject jsonObj = JObject.Parse(File.ReadAllText(AppContext.BaseDirectory + "_configuration.json"));
-            JToken jToken = jsonObj.SelectToken("serverID");
+            JToken jToken = jsonObj.SelectToken("server-ids");
             _serverids = new Dictionary<String, ulong>();
             foreach (JProperty obj in jToken.Children())
             {
@@ -139,12 +139,15 @@ namespace BananaBot
 
             foreach (SocketGuildUser user in filteredUsers)
             {
-                foreach (SocketRole sRole in user.Roles)
+                if (!user.IsBot)
                 {
-                    if (sRole.Name.Equals(role))
+                    foreach (SocketRole sRole in user.Roles)
                     {
-                        data.Add(user);
-                        break;
+                        if (sRole.Name.Equals(role))
+                        {
+                            data.Add(user);
+                            break;
+                        }
                     }
                 }
             }
@@ -163,12 +166,15 @@ namespace BananaBot
             List<SocketGuildUser> data = new List<SocketGuildUser>();
             foreach (SocketGuildUser user in users)
             {
-                foreach (SocketRole sRole in user.Roles)
+                if (!user.IsBot)
                 {
-                    if (role.Equals(sRole.Name.ToLower()))
+                    foreach (SocketRole sRole in user.Roles)
                     {
-                        data.Add(user);
-                        break;
+                        if (role.Equals(sRole.Name.ToLower()))
+                        {
+                            data.Add(user);
+                            break;
+                        }
                     }
                 }
             }
@@ -201,6 +207,12 @@ namespace BananaBot
                     {
                         roleList.Add(role.Name);
                     }
+
+                    for (int i = 0; i < roleList.Count; i++)
+                    {
+                        roleList[i] = roleList[i].ToLower();
+                    }
+
                     // Check if we can find any matches.
                     foreach (String sRole in rolesToCheck)
                     {
