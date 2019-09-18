@@ -66,6 +66,12 @@ namespace BananaBot
             }
         }
 
+        public static SocketRole GetRoleObject(ICommandContext context, string roleToFind)
+        {
+            SocketRole role = context.Guild.Roles.First(x => x.Name.Equals(roleToFind)) as SocketRole;
+            return role;
+        }
+
         /// <summary>
         /// Used to find all users with a single role as search query.
         /// </summary>
@@ -246,6 +252,24 @@ namespace BananaBot
             }
 
             return data;
+        }
+
+        /// <summary>
+        /// Checks if a user has a specific role given a list of roles.
+        /// </summary>
+        /// <param name="roleString">The Role to look for</param>
+        /// <param name="userRoles">The users current roles</param>
+        /// <returns>Returns true if the role is found, otherwise false</returns>
+        public static bool UserHasRole(string roleString, IReadOnlyCollection<SocketRole> userRoles)
+        {
+            foreach (SocketRole role in userRoles)
+            {
+                if (role.Name.Equals(roleString))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
