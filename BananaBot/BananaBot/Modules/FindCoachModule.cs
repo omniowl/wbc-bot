@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BananaBot.Modules
 {
-    public class FindCoach : ModuleBase
+    public class FindCoachModule : ModuleBase
     {
         [Command("find"), Summary("Used to find a Coach.")]
         public async Task Find(string commandText = "")
@@ -51,12 +51,6 @@ namespace BananaBot.Modules
                     }
                 }
             }
-            else if (Context.Channel.Name.Equals(channelDict["fn"]))
-            {
-                List<IMessage> message = new List<IMessage>() { this.Context.Message };
-                await Context.Channel.DeleteMessagesAsync(message);
-                await FindFN();
-            }
         }
 
         private async Task FindOW(string role)
@@ -65,14 +59,6 @@ namespace BananaBot.Modules
             activeCoaches = Utility.FindAllUsersWithRoles($"~{role}", activeCoaches);
 
             await SendCoachList(activeCoaches, role);
-        }
-
-        private async Task FindFN()
-        {
-            List<SocketGuildUser> activeCoaches = await Utility.FindAllUsersWithRoleExclude("Coach", this.Context, "Inactive");
-            activeCoaches = Utility.FindAllUsersWithRoles("Fortnite", activeCoaches);
-
-            await SendCoachList(activeCoaches);
         }
 
         private async Task SendCoachList(List<SocketGuildUser> coaches, string role = "")
@@ -115,7 +101,7 @@ namespace BananaBot.Modules
             sBuilder.Append("\n");
             foreach (string hero in heroes.Children())
             {
-                sBuilder.Append(hero).Append(",");
+                sBuilder.AppendLine(hero);
             }
             await caller.SendMessageAsync(sBuilder.ToString());
         }
